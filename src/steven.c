@@ -41,7 +41,7 @@ int main(int argc, char** argv) {
   // initialize path
   path = (char*)malloc(1024);
   if (path == NULL) {
-    printf("Error: unable to allocate memory for path\n");
+    printf("error: unable to allocate memory for path\n");
     exit(1);
   }
   strcpy(path, "/bin");
@@ -54,14 +54,14 @@ int main(int argc, char** argv) {
 
     char* command = (char*)malloc(1024);
     if (command == NULL) {
-      perror("Error: unable to allocate memory for command\n");
+      perror("error: unable to allocate memory for command\n");
       exit(1);
     }
 
     int argCount = 0;
     char** args = (char**)malloc(sizeof(char*) * 512);
     if (args == NULL) {
-      perror("Error: unable to allocate memory for args\n");
+      perror("error: unable to allocate memory for args\n");
       exit(1);
     }
 
@@ -100,7 +100,7 @@ int main(int argc, char** argv) {
     exit(0);
   }
   else {
-    printf("Error: too many arguments.\n");
+    printf("error: too many arguments.\n");
     exit(1);
   }
 
@@ -118,7 +118,7 @@ void parseInput(char* input, char* command, char** args, int* argCount) {
 
   args = (char**)realloc(args, sizeof(char*) * 512);
   if (args == NULL) {
-    printf("Error: unable to allocate memory for args\n");
+    printf("error: unable to allocate memory for args\n");
     exit(1);
   }
 
@@ -140,14 +140,23 @@ void parseInput(char* input, char* command, char** args, int* argCount) {
 int executeCommand(char* command, char** args, int* argCount) {
   if (strcmp(command, "exit") == 0) {
     if (*argCount != 0) {
-      printf("exit: too many arguments\n");
+      printf("exit: takes no arguments\n");
       return 1;
     }
     return 0;
   }
 
   else if (strcmp(command, "cd") == 0) {
-    printf("cd not yet implemented\n");
+    if (*argCount != 1) {
+      printf("cd: takes 1 argument\n");
+      return 1;
+    }
+    printf("%s\n", args[0]);
+    int status = chdir(args[0]);
+    if (status == -1) {
+      printf("error: chdir failed\n");
+      exit(1);
+    }
   }
 
   else if (strcmp(command, "path") == 0) {
