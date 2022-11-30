@@ -189,17 +189,17 @@ int executeCommand(char* command, char** args, int* argCount) {
 
 int spawnProgram(char* program, char** argList) {
   pid_t pid;
-	pid = fork();
-	
-	if (pid != 0) {
-		// parent process
-		return pid;
-	}
-	else {
-		// execute program
-		execvp(program, argList);
-		// error in executing program
-		fprintf(stderr, "error occurred in execvp\n");
-		abort();
-	}
+  pid = fork();
+
+  if (pid != 0) {
+    // parent process
+    return pid;
+  }
+  else {
+    // execute program
+    execvp(program, argList);
+    // error in executing program
+    fprintf(stderr, "error occurred in execvp\n");
+    abort();
+  }
 }
