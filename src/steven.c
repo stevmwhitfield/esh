@@ -8,8 +8,9 @@ const char* PROMPT = "steven> ";
 
 char* path;
 
-void parseInput(char* input, char* command, char** args, int*);
+void parseInput(char*, char*, char**, int*);
 int executeCommand(char*, char**, int*);
+int spawnProgram(char*, char**);
 
 // shell runs in interactive mode by default
 // shell supports batch mode by running shell with arg: text file
@@ -175,4 +176,21 @@ int executeCommand(char* command, char** args, int* argCount) {
     printf("command '%s' not found\n", command);
   }
   return 1;
+}
+
+int spawnProgram(char* program, char** argList) {
+  pid_t pid;
+	pid = fork();
+	
+	if (pid != 0) {
+		// parent process
+		return pid;
+	}
+	else {
+		// execute program
+		execvp(program, argList);
+		// error in executing program
+		fprintf(stderr, "error occurred in execvp\n");
+		abort();
+	}
 }
