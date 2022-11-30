@@ -111,7 +111,8 @@ void parseInput(char* input, char* command, char** args, int* argCount) {
   char* t1;
 
   t1 = strsep(&input, " ");
-  t1[strcspn(t1, "\r\n")] = 0;
+  t1[strcspn(t1, "\r")] = 0;
+  t1[strcspn(t1, "\n")] = 0;
   strcpy(command, t1);
 
   *argCount = 0;
@@ -125,14 +126,11 @@ void parseInput(char* input, char* command, char** args, int* argCount) {
   int i = 0;
   while (input != NULL) {
     char* t2 = strsep(&input, " ");
-    if (strcmp(t2, "\0") == 0 || strcmp(t2, "\n") == 0 ||
-        strcmp(t2, " ") == 0) {
-      continue;
-    }
-    else {
-      args[i] = t2;
-      *argCount += 1;
-    }
+    t2[strcspn(t2, "\r")] = 0;
+    t2[strcspn(t2, "\n")] = 0;
+    t2[strcspn(t2, "\0")] = 0;
+    args[i] = t2;
+    *argCount += 1;
     i++;
   }
 }
@@ -156,6 +154,17 @@ int executeCommand(char* command, char** args, int* argCount) {
     if (status == -1) {
       printf("error: chdir failed\n");
       exit(1);
+    }
+  }
+
+  else if (strcmp(command, "pwd") == 0) {
+    if (*argCount != 0) {
+      printf("pwd: takes no arguments\n");
+      return 1;
+    }
+    char cwd[1000];
+    if (getcwd(cwd, sizeof(cwd)) != NULL) {
+      printf("pwd: %s\n", cwd);
     }
   }
 
